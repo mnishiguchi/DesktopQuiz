@@ -140,7 +140,8 @@ public class DesktopQuiz extends JFrame
 			String msg = "Please provide question-answer pairs in " + FILEPATH + " (TAB-delimited).\n"
 					+ "E.G.: If you use Microsoft Excell, use A1 field for Question1, B1 for Answer1;\n"
 					+ "A2 for Question2, B2 for Answer2, and so on.\n"
-					+ "Then save the file as a Tab-delimited file.\n";
+					+ "Then save the file as a Tab-delimited file.\n"
+					+ "If you want to insert a new line, the pipe sign(|) represents the action.";
 			JOptionPane.showMessageDialog(DesktopQuiz.this, msg, "Message",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
