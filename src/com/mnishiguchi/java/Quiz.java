@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Quiz
 {
 	// CONSTANTS
-	public static final String DELIMITER = "\t";
-	public static final String FILEPATH = "C:quizzes.txt";
+	public static final String DELIMITER = DesktopQuiz.DELIMITER;
+	public static final String FILEPATH = DesktopQuiz.FILEPATH;
 
 	// CLASS VARIABLES
 	public static ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
@@ -27,7 +27,6 @@ public class Quiz
 					System.out.println("data.length should be 2");
 					continue;
 				}
-				
 				// Convert the pipe character to the new line.
 				data[0] = data[0].replaceAll("\\|", "\\\n");
 				data[1] = data[1].replaceAll("\\|", "\\\n");

@@ -13,6 +13,10 @@ import javax.swing.Box;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -27,6 +31,8 @@ public class DesktopQuiz extends JFrame
 	/* CONSTANTS */
 	public static final int WIDTH = 480;
 	public static final int HEIGHT = 200;
+	public static final String DELIMITER = "\t";
+	public static final String FILEPATH = "C:quizzes.txt";
 
 	/* INSTANCE VARIABLES */
 	JToggleButton mAnswerToggle;
@@ -57,12 +63,21 @@ public class DesktopQuiz extends JFrame
 
 		JPanel mainPanel = new JPanel(new BorderLayout() );
 
-		mTextArea = new JTextArea(7, 20);
+		//Create the menu bar.
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menuHelp = new JMenu("Help");
+		menuBar.add(menuHelp);
+		JMenuItem menuItem1 = new JMenuItem("How to provide quizzes?");
+		menuItem1.addActionListener(this);
+		menuItem1.setActionCommand("How to provide quizzes?");
+		menuHelp.add(menuItem1);
+		this.setJMenuBar(menuBar);
+		
+		mTextArea = new JTextArea(5, 20);
 		mTextArea.setEditable(false);
 		mTextArea.setLineWrap(true);
 		mTextArea.setBorder(BorderFactory.createEmptyBorder(9,9,0,9) );
 		JScrollPane scrollPane = new JScrollPane(mTextArea ); 
-		
 		
 		mAnswerToggle = new JToggleButton("Show Answer", false);
 		mAnswerToggle.addChangeListener(this);
@@ -84,7 +99,6 @@ public class DesktopQuiz extends JFrame
 		mainPanel.add(buttonBox, BorderLayout.SOUTH);
 
 		this.add(mainPanel);
-		//this.pack();
 		this.setVisible(true);    // show this frame
 		shuffleQuiz();
 	}
@@ -94,9 +108,15 @@ public class DesktopQuiz extends JFrame
 	 */
 	public void shuffleQuiz()
 	{
-		if (Quiz.size == 0) mTextArea.setText("No quiz was found.\n"
-				+ "Please provide question-answer pairs separated by a TAB "
-				+ "in each line of quizzes.txt file.");
+		if (Quiz.size == 0)  // Ensure that quizzes exist.
+		{
+			mTextArea.setText("No quiz was found. \n"
+					+ "Please provide question-answer pairs in " + FILEPATH + "(TAB-delimited).\n"
+					+ "  E.G.: A1 field for Question1, B1 field for Answer1\n"
+					+ "  E.G.: A2 field for Question2, B2 field for Answer2\n");
+			return;
+		}
+
 		// Random-pick a quiz.
 		while (true)
 		{
@@ -107,7 +127,7 @@ public class DesktopQuiz extends JFrame
 				break;
 			}
 		}
-		mTextArea.setText("[ QUESTION #" + (mIndex + 1) + " ]\n");
+		mTextArea.setText("---- QUESTION #" + (mIndex + 1) + " ----\n");
 		mTextArea.append(Quiz.getQuizzes().get(mIndex).getQuestion() );
 		mAnswerToggle.setSelected(false);
 	}
@@ -115,8 +135,18 @@ public class DesktopQuiz extends JFrame
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if ("shuffle".equals(e.getActionCommand() ) )
+		if ("How to provide quizzes?".equals(e.getActionCommand() ) )
 		{
+			String msg = "Please provide question-answer pairs in " + FILEPATH + " (TAB-delimited).\n"
+					+ "E.G.: If you use Microsoft Excell, use A1 field for Question1, B1 for Answer1;\n"
+					+ "A2 for Question2, B2 for Answer2, and so on.\n"
+					+ "Then save the file as a Tab-delimited file.\n";
+			JOptionPane.showMessageDialog(DesktopQuiz.this, msg, "Message",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+		else if ("shuffle".equals(e.getActionCommand() ) )
+		{
+			if (Quiz.size == 0) return; // Do nothing if there is no quiz.
 			shuffleQuiz();
 		}
 	}
@@ -124,6 +154,8 @@ public class DesktopQuiz extends JFrame
 	@Override
 	public void stateChanged(ChangeEvent e)
 	{
+		if (Quiz.size == 0) return; // Do nothing if there is no quiz.
+		
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		ButtonModel buttonModel = abstractButton.getModel();
 		//boolean armed = buttonModel.isArmed();
@@ -132,13 +164,13 @@ public class DesktopQuiz extends JFrame
 		
 		if (selected)
 		{
-			mTextArea.setText("[ ANSWER #" + (mIndex + 1) + " ]\n");
+			mTextArea.setText("---- ANSWER #" + (mIndex + 1) + " ----\n");
 			mTextArea.append(Quiz.getQuizzes().get(mIndex).getAnswer() );
 			mAnswerToggle.setText("Review Question");
 		}
 		if (!selected)
 		{
-			mTextArea.setText("[ QUESTION #" + (mIndex + 1) + " ]\n");
+			mTextArea.setText("---- QUESTION #" + (mIndex + 1) + " ----\n");
 			mTextArea.append(Quiz.getQuizzes().get(mIndex).getQuestion() );
 			mAnswerToggle.setText("Show Answer");
 		}
