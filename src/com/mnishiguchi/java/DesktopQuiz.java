@@ -25,10 +25,8 @@ public class DesktopQuiz extends JFrame
 	implements ActionListener, ChangeListener
 {
 	/* CONSTANTS */
-	public static final String DELIMITER = "\t";
-	public static final String FILENAME = "C:tmp.txt";
-	public static final int WIDTH = 300;
-	public static final int HEIGHT = 170;
+	public static final int WIDTH = 480;
+	public static final int HEIGHT = 200;
 
 	/* INSTANCE VARIABLES */
 	JToggleButton mAnswerToggle;
@@ -59,9 +57,12 @@ public class DesktopQuiz extends JFrame
 
 		JPanel mainPanel = new JPanel(new BorderLayout() );
 
-		mTextArea = new JTextArea(5, 20);
-		JScrollPane scrollPane = new JScrollPane(mTextArea); 
+		mTextArea = new JTextArea(7, 20);
 		mTextArea.setEditable(false);
+		mTextArea.setLineWrap(true);
+		mTextArea.setBorder(BorderFactory.createEmptyBorder(9,9,0,9) );
+		JScrollPane scrollPane = new JScrollPane(mTextArea ); 
+		
 		
 		mAnswerToggle = new JToggleButton("Show Answer", false);
 		mAnswerToggle.addChangeListener(this);
@@ -73,8 +74,9 @@ public class DesktopQuiz extends JFrame
 		mSuffleButton.setPreferredSize(new Dimension(125,25) );
 		
 		Box buttonBox = Box.createHorizontalBox();
-		buttonBox.add(mAnswerToggle);
 		buttonBox.add(Box.createHorizontalGlue() );
+		buttonBox.add(mAnswerToggle);
+		buttonBox.add(Box.createHorizontalStrut(30) );
 		buttonBox.add(mSuffleButton);
 		buttonBox.setBorder(BorderFactory.createEmptyBorder(9,9,14,9) );
 
@@ -82,16 +84,31 @@ public class DesktopQuiz extends JFrame
 		mainPanel.add(buttonBox, BorderLayout.SOUTH);
 
 		this.add(mainPanel);
-		this.pack();
+		//this.pack();
 		this.setVisible(true);    // show this frame
 		shuffleQuiz();
 	}
 	
+	/**
+	 * Random-pick a quiz and show it on the TextArea.
+	 */
 	public void shuffleQuiz()
 	{
+		if (Quiz.size == 0) mTextArea.setText("No quiz was found.\n"
+				+ "Please provide question-answer pairs separated by a TAB "
+				+ "in each line of quizzes.txt file.");
 		// Random-pick a quiz.
-		mIndex = mRandom.nextInt(Quiz.size);
-		mTextArea.setText(Quiz.getQuizzes().get(mIndex).getQuestion() );
+		while (true)
+		{
+			int index = mRandom.nextInt(Quiz.size);
+			if (index != mIndex)
+			{
+				mIndex = index;
+				break;
+			}
+		}
+		mTextArea.setText("[ QUESTION #" + (mIndex + 1) + " ]\n");
+		mTextArea.append(Quiz.getQuizzes().get(mIndex).getQuestion() );
 		mAnswerToggle.setSelected(false);
 	}
 
@@ -115,12 +132,14 @@ public class DesktopQuiz extends JFrame
 		
 		if (selected)
 		{
-			mTextArea.setText(Quiz.getQuizzes().get(mIndex).getAnswer() );
+			mTextArea.setText("[ ANSWER #" + (mIndex + 1) + " ]\n");
+			mTextArea.append(Quiz.getQuizzes().get(mIndex).getAnswer() );
 			mAnswerToggle.setText("Review Question");
 		}
 		if (!selected)
 		{
-			mTextArea.setText(Quiz.getQuizzes().get(mIndex).getQuestion() );
+			mTextArea.setText("[ QUESTION #" + (mIndex + 1) + " ]\n");
+			mTextArea.append(Quiz.getQuizzes().get(mIndex).getQuestion() );
 			mAnswerToggle.setText("Show Answer");
 		}
 	}

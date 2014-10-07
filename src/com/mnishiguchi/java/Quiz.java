@@ -6,7 +6,7 @@ public class Quiz
 {
 	// CONSTANTS
 	public static final String DELIMITER = "\t";
-	public static final String FILEPATH = "C:tmp.txt";
+	public static final String FILEPATH = "C:quizzes.txt";
 
 	// CLASS VARIABLES
 	public static ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
@@ -27,7 +27,12 @@ public class Quiz
 					System.out.println("data.length should be 2");
 					continue;
 				}
-				Quiz.quizzes.add( new Quiz(data[0], data[1]) ) ;  
+				
+				// Convert the pipe character to the new line.
+				data[0] = data[0].replaceAll("\\|", "\\\n");
+				data[1] = data[1].replaceAll("\\|", "\\\n");
+
+				Quiz.quizzes.add(new Quiz(data[0], data[1]) ) ;  
 			}
 		}
 	}

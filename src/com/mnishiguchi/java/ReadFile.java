@@ -8,10 +8,6 @@ import java.util.Scanner;
 /**  This class provides a few static methods to read data from a file  */
 public class ReadFile
 {
-    
-    // Static constants
-    public static final String DELIMITER = "\t";
-    
     /**
      * Creates a Scanner object to read a specified file.
      * @param filePath - path of the file to be opened
@@ -23,11 +19,10 @@ public class ReadFile
         try
         {
             File file = new File(filePath);
-
-            if (file.exists() == false)    //if file doesn't exists, then create it
-            {
-                file.createNewFile();
-            }
+            
+            // If file doesn't exists, then create it.
+            if (!file.exists() ) file.createNewFile();
+            // Create a scanner
             in = new Scanner(file);
         }
         catch (IOException e)
@@ -39,30 +34,25 @@ public class ReadFile
     }
     
     /**
-     * Reads data from a file
-     * @param   filePath    the path to the file to be read
-     * @return  an ArrayList object with each line of the file as an array element
+     * Reads data from a file.
+     * @param filePath
+     * @return  An ArrayList object with each line of the file as an array element.
      */
     public static ArrayList<String> getDataFromFile(String filePath)
     {
-        // open file
-        Scanner in = getScanner(filePath);
+        Scanner in = getScanner(filePath);  // Open file
         
-        String line = "";  // temporary storage
-        ArrayList<String> lines = new ArrayList<String>();  // to store raw data
-        
+        String line = "";  // Temporary storage for each line
+        ArrayList<String> data = new ArrayList<String>();
         while (in.hasNextLine() )
         {
-            line = in.nextLine();  // read a line
-            
-            // if a line has data, add to temporary storage
-            if ( line.equals("") == false)
-            {
-                lines.add(line); 
-            }
+            line = in.nextLine();  // Read a line
+            // If any, add to temporary storage.
+            if (!line.equals("") ) data.add(line); 
+            //System.out.println(line);
         }
-        in.close();  // close file
-        return lines ;
+        in.close();  // Close file
+        return data;
     }
 
 }
