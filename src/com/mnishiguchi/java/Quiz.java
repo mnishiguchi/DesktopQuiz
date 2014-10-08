@@ -27,9 +27,9 @@ public class Quiz
 					System.out.println("data.length should be 2");
 					continue;
 				}
-				// Convert the pipe character to the new line.
-				data[0] = data[0].replaceAll("\\|", "\\\n");
-				data[1] = data[1].replaceAll("\\|", "\\\n");
+				// Convert <br/> to the new line.
+				data[0] = data[0].replaceAll("<br/>", "\\\n");
+				data[1] = data[1].replaceAll("<br/>", "\\\n");
 
 				Quiz.quizzes.add(new Quiz(data[0], data[1]) ) ;  
 			}

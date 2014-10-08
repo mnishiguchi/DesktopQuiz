@@ -44,9 +44,9 @@ public class DesktopQuiz extends JFrame
 	public static void main(String[] args)
 	{
 		// set fonts
-		UIManager.put("ToggleButton.font", new Font("Calibri",Font.PLAIN,14) );
-		UIManager.put("Button.font", new Font("Calibri",Font.PLAIN,14) );
-		UIManager.put("TextArea.font", new Font("Arial",Font.PLAIN,14));
+		UIManager.put("ToggleButton.font", new Font("Arial",Font.PLAIN,13) );
+		UIManager.put("Button.font", new Font("Arial",Font.PLAIN,13) );
+		UIManager.put("TextArea.font", new Font("Calibri",Font.PLAIN,15));
 		
 		new DesktopQuiz();    // start the application
 	}
@@ -93,14 +93,14 @@ public class DesktopQuiz extends JFrame
 		buttonBox.add(mAnswerToggle);
 		buttonBox.add(Box.createHorizontalStrut(30) );
 		buttonBox.add(mSuffleButton);
-		buttonBox.setBorder(BorderFactory.createEmptyBorder(9,9,14,9) );
+		buttonBox.setBorder(BorderFactory.createEmptyBorder(9,9,9,9) );
 
 		mainPanel.add(scrollPane, BorderLayout.NORTH);
 		mainPanel.add(buttonBox, BorderLayout.SOUTH);
 
 		this.add(mainPanel);
-		this.setVisible(true);    // show this frame
-		shuffleQuiz();
+		this.setVisible(true);  // show this frame
+		shuffleQuiz();  // Show a quiz.
 	}
 	
 	/**
@@ -110,17 +110,21 @@ public class DesktopQuiz extends JFrame
 	{
 		if (Quiz.size == 0)  // Ensure that quizzes exist.
 		{
-			mTextArea.setText("No quiz was found. \n"
-					+ "Please provide question-answer pairs in " + FILEPATH + "(TAB-delimited).\n"
-					+ "  E.G.: A1 field for Question1, B1 field for Answer1\n"
-					+ "  E.G.: A2 field for Question2, B2 field for Answer2\n");
+			mTextArea.setText("No quiz was found. \n");
+			String msg = "Please provide question-answer pairs (TAB-delimited) to "
+					+ "each line of the file " + FILEPATH + ".\n"
+					+ "If you want to insert a new line, use the <br/> tag.";
+			JOptionPane.showMessageDialog(DesktopQuiz.this, msg, "Message",
+					JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 
 		// Random-pick a quiz.
+		int index;
 		while (true)
 		{
-			int index = mRandom.nextInt(Quiz.size);
+			index = mRandom.nextInt(Quiz.size);
+			// Ensure that the new index is not the same as the previous one.
 			if (index != mIndex)
 			{
 				mIndex = index;
@@ -137,11 +141,9 @@ public class DesktopQuiz extends JFrame
 	{
 		if ("How to provide quizzes?".equals(e.getActionCommand() ) )
 		{
-			String msg = "Please provide question-answer pairs in " + FILEPATH + " (TAB-delimited).\n"
-					+ "E.G.: If you use Microsoft Excell, use A1 field for Question1, B1 for Answer1;\n"
-					+ "A2 for Question2, B2 for Answer2, and so on.\n"
-					+ "Then save the file as a Tab-delimited file.\n"
-					+ "If you want to insert a new line, the pipe sign(|) represents the action.";
+			String msg = "Please provide question-answer pairs (TAB-delimited) to "
+					+ "each line of the file " + FILEPATH + ".\n"
+					+ "If you want to insert a new line, use the <br/> tag.";
 			JOptionPane.showMessageDialog(DesktopQuiz.this, msg, "Message",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -169,7 +171,7 @@ public class DesktopQuiz extends JFrame
 			mTextArea.append(Quiz.getQuizzes().get(mIndex).getAnswer() );
 			mAnswerToggle.setText("Review Question");
 		}
-		if (!selected)
+		else if (!selected)
 		{
 			mTextArea.setText("---- QUESTION #" + (mIndex + 1) + " ----\n");
 			mTextArea.append(Quiz.getQuizzes().get(mIndex).getQuestion() );
